@@ -26,4 +26,9 @@ class LoginController extends Controller
             return back()->withErrors(['email' => 'Please Check Your Credential'])->withInput();
         }
     }
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('login');
+    }
 }
