@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\belajar;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsersController;
 
 Route::get('/', function () {
@@ -30,3 +31,5 @@ Route::resource('dashboard', DashboardController::class);
 Route::resource('categories', CategoriesController::class);
 Route::resource('users', UsersController::class);
 Route::resource('products', ProductsController::class);
+Route::resource('pos', TransactionController::class);
+Route::get('get-product/{id}', [TransactionController::class, 'getProduct']);
