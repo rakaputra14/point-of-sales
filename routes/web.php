@@ -32,4 +32,8 @@ Route::resource('categories', CategoriesController::class);
 Route::resource('users', UsersController::class);
 Route::resource('products', ProductsController::class);
 Route::resource('pos', TransactionController::class);
+
+Route::get('print-invoice/{id}', [TransactionController::class, 'print'])->name('print-invoice');
+// Alternatively, you can use the following line to define the route for printing invoices
+// Route::get('print/{id}', [TransactionController::class, 'print'])->name('print');
 Route::get('get-product/{id}', [TransactionController::class, 'getProduct']);

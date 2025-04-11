@@ -36,8 +36,8 @@
 <body>
 
     <!-- ======= Header ======= -->
-    @include('sweetalert::alert')
-    @include('layouts.inc.header')
+    @include('sweetalert::alert');
+    @include('layouts.inc.header');
     <!-- End Header -->
 
     <!-- ======= Sidebar ======= -->
@@ -89,11 +89,20 @@
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 
-    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
+    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"]);
 
     <script>
         // #category_id, document.getElementById('category_id'), document.querySelector('#id')
         let category = document.getElementById('category_id');
+
+        function formatRupiah(number) {
+            const formatted = number.toLocaleString("id", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+
+            });
+            return formatted;
+}
 
         $('#category_id').change(function () {
             let cat_id = $(this).val(),
@@ -102,6 +111,7 @@
                 type: 'GET',
                 url: '/get-product/' + cat_id,
                 dataType: 'json',
+                //alternative if we're using POST method
                 //type: 'POST',
                 //header: (
                 //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -119,8 +129,9 @@
             let selectedOption = $('#product_id option:selected');
             //let selectedOption = $('#product_id').find('option:selected');
             let namaProduk = selectedOption.text();
+            let productid = selectedOption.val();
             let photoProduct = selectedOption.data('img');
-            let productPrice = selectedOption.data('price');
+            let productPrice = parseInt(selectedOption.data('price')) || 0;
 
             if ($('#category_id').val() == '')
             {
@@ -136,14 +147,45 @@
 
             let newRow = `<tr>`;
             newRow += `<td><img width="100" src="{{ asset('storage/') }}/${photoProduct}" alt="a picture"></td>`
-            newRow += `<td>${namaProduk}</td>`
-            newRow += `<td>Qty</td>`
-            newRow += `<td>${productPrice}</td>`
+            newRow += `<td>${namaProduk}<input type='hidden' name='product_id[]' value='${productid}'></td>`
+            newRow += `<td width='100px'><input min='1' value='1' type='number' name='qty[]' class='qty form-control'></td>`
+            newRow += `<td><input type='hidden' name='order_price[]' value='${productPrice}'><span class='price' data-price=${productPrice}>${formatRupiah(productPrice)}</span></td>`
+            newRow += `<td><input type='hidden' name='subtotal_input[]' value='${productPrice}'><span class='subtotal'>${formatRupiah(productPrice)}</span></td>`
+            // Can Also use Class for input
+            // newRow += `<td><input type='hidden' class='subtotal_input[]' value='${productPrice}'><span class='subtotal'>${formatRupiah(productPrice)}</span></td>`
             newRow += `</tr>`;
 
             tbody.append(newRow);
 
+            calculateSubtotal();
+
             clearAll();
+
+            $('.qty').off().on('input', function () {
+                let qty = parseInt($(this).val()) || 0;
+                let price = parseInt($(this).closest('tr').find('.price').data('price')) || 0;
+                let subtotal = qty * price;
+                $(this).closest('tr').find('.subtotal').text(formatRupiah(subtotal));
+                $(this).closest('tr').find('input[name="subtotal_input[]"]').val(subtotal);
+                //If using class instead of name use the code below
+                //$(this).closest('tr').find('.subtotal_input').val(subtotal);
+
+                calculateSubtotal();
+                //Alternative
+                //let row = $(this).closest('tr');
+                //let price = row.find('.price').data('price')) || 0;
+                //.find('.subtotal').text(formatRupiah(subtotal));
+            });
+
+            function calculateSubtotal() {
+                let grandtotal = 0;
+                $('.subtotal').each(function () {
+                    let total = parseInt($(this).text().replace(/\./g, '')) || 0;
+                    grandtotal += total;
+                });
+                $('.grandtotal').text(formatRupiah(grandtotal));
+                $('input[name="amounttotal"]').val(grandtotal);
+            }
 
         });
 

@@ -20,6 +20,7 @@
                                         <th>Order Date</th>
                                         <th>Amount</th>
                                         <th>Status</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -32,10 +33,10 @@
                                             <td>{{ $data->order_status ? 'Paid' : 'Unpaid' }}</td>
                                             <td>
                                                 <a href="{{ route('pos.show', $data->id) }}" class="btn btn-sm btn-secondary">
-                                                    <i class="bi bi-detail"></i>
+                                                    <i class="bi bi-detail"></i> Show
                                                 </a>
                                                 <a href="{{ route('pos.edit', $data->id) }}" class="btn btn-sm btn-success">
-                                                    <i class="bi bi-print"></i>
+                                                    <i class="bi bi-print"></i> Edit
                                                 </a>
                                             </td>
                                         </tr>
