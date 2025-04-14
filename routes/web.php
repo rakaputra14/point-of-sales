@@ -10,7 +10,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsersController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
 });
 
 Route::get('belajar', [belajar::class, 'index']);
